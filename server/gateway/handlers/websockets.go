@@ -151,7 +151,7 @@ func CreateNotifier() *SocketStore {
 // WebSocket connections.
 func ConnectToRabbitMQ(ctx *HandlerContext) {
 	// Connect to RabbitMQ server
-	conn, err := amqp.Dial("amqp://localhost:5672/")
+	conn, err := amqp.Dial("amqp://rabbitmq:5672")
 	if err != nil {
 		log.Fatalf("Failed to connect to RabbitMQ: %v", err)
 	}

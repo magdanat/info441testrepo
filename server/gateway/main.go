@@ -10,7 +10,6 @@ import (
 	"net/http/httputil"
 	"os"
 	"strings"
-
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -27,13 +26,13 @@ func main() {
 	tlsCertPath := os.Getenv("TLSCERT")
 
 	if len(tlsKeyPath) < 0 || len(tlsCertPath) < 0 {
-		log.Fatal("No environment variable found for eitherTLSKEY or TLSCERT")
+		log.Fatal("No environment variable found for either TLSKEY or TLSCERT")
 	}
 
 	// Creating a connection to the database
-	// dsn := fmt.Sprintf(os.Getenv("DSN"), os.Getenv("MYSQL_ROOT_PASSWORD"))
+	dsn := fmt.Sprintf(os.Getenv("DSN"), os.Getenv("MYSQL_ROOT_PASSWORD"))
 	// dsn := fmt.Sprintf("root:%s@tcp(127.0.0.1)/demo", os.Getenv("MYSQL_ROOT_PASSWORD"))
-	dsn := fmt.Sprintf("root:%s@tcp(127.0.0.1)/scribble", os.Getenv("MYSQL_ROOT_PASSWORD"))
+	// dsn := fmt.Sprintf("root:%s@tcp(127.0.0.1)/scribble", os.Getenv("MYSQL_ROOT_PASSWORD"))
 
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
