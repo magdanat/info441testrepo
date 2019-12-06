@@ -60,6 +60,7 @@ app.post("/", (req, res, next) => {
         if (err) { 
             res.status(500).send("Unable to post message");
         } else { 
+          console.log("Succesfully posted message");
             res.status(201);
             res.set("Content-Type", "application/json");
             res.json(result);

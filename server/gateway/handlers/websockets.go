@@ -19,8 +19,9 @@ type SocketStore struct {
 
 // Message This is a struct to read our message into
 type Message struct {
-	Type    string `json:"type"`
-	Message string `json:"message"`
+	Type     string `json:"type"`
+	Message  string `json:"message"`
+	Username string `json:"username"`
 }
 
 // Control messages for websocket
@@ -207,6 +208,7 @@ func (s *SocketStore) writeMessages(ctx *HandlerContext, message *Message) {
 	// var writeError error
 	// messageType := message.Type
 	data := message.Message
+	username := message.Username
 	for _, conn := range ctx.SocketStore.Connections {
 		if err := conn.WriteMessage(TextMessage, []byte(data)); err != nil {
 			fmt.Println("Error writing message to WebSocket connection.", err)
