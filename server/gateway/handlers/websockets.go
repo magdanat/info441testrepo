@@ -179,7 +179,7 @@ func ConnectToRabbitMQ(ctx *HandlerContext) {
 	msgs, err := ch.Consume(
 		q.Name, // queue
 		"",     // consumer
-		true,   // auto-ack
+		false,  // auto-ack
 		false,  // exclusive
 		false,  // no-local
 		false,  // no-wait
@@ -187,7 +187,7 @@ func ConnectToRabbitMQ(ctx *HandlerContext) {
 	)
 	failOnError(err, "Failed to register a consumer")
 
-	// forever := make(chan bool)
+	// forever := make(chan amqp.Delivery)
 
 	// go func() {
 	// 	for d := range msgs {
@@ -216,18 +216,13 @@ func (s *SocketStore) processMessages(ctx *HandlerContext, msgs <-chan amqp.Deli
 
 // Function to write messages to users
 func (s *SocketStore) writeMessages(ctx *HandlerContext, message *Message) {
-	// var writeError error
-	// messageType := message.Type
 	data := message
-	// username := message.Username
+	fmt.Println(data)
 	for _, conn := range ctx.SocketStore.Connections {
 		fmt.Println("About to send %m", data)
 		if err := conn.WriteJSON(data); err != nil {
 			fmt.Println("Error writing message to WebSocket connection.", err)
 		}
-		// if writeError != nil {
-		// 	return writeError
-		// }
 	}
 }
 

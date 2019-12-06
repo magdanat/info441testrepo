@@ -46,10 +46,12 @@ function sendMessageToRabbitMQ(msg) {
             console.log(" [x] Sent %s", msg);
             console.log("Message succesfully sent to RabbitMQ!");
         });
-        setTimeout(function () {
-            conn.close();
-            process.exit(0);
-        }, 500);
+        // Not sure if this is needed...
+        // setTimeout(function () {
+        //   console.log("Alright Imma head...");
+        //     conn.close();
+        //     process.exit(0);
+        // }, 500);
     });
 }
 
@@ -68,6 +70,7 @@ app.post("/", (req, res, next) => {
             res.json(result);
 
             console.log("Succesfully posted message");
+
             // // Send event to RabbitMQ Server
             // // create event object
             console.log("Sending a message to queue...");

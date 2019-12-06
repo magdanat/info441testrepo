@@ -4,6 +4,7 @@
         <script>
             let sock;
             document.addEventListener("DOMContentLoaded", (event) => {
+                console.log("Opening the document...");
                 // NEEDS TO BE CONNECTED TO MAIN.GO!!!
                 sock = new WebSocket("ws://localhost:443/ws");
                 sock.onopen = () => {
