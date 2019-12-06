@@ -203,6 +203,7 @@ func ConnectToRabbitMQ(ctx *HandlerContext) {
 
 // Function that processes the messages from the queue
 func (s *SocketStore) processMessages(ctx *HandlerContext, msgs <-chan amqp.Delivery) {
+	fmt.Println("In process messages...")
 	for message := range msgs {
 		message.Ack(false)
 		messageStruct := &Message{}
@@ -210,21 +211,29 @@ func (s *SocketStore) processMessages(ctx *HandlerContext, msgs <-chan amqp.Deli
 		if err != nil {
 			log.Fatalf("Error processing the message queue")
 		}
-		s.writeMessages(ctx, messageStruct)
-	}
-}
-
-// Function to write messages to users
-func (s *SocketStore) writeMessages(ctx *HandlerContext, message *Message) {
-	data := message
-	fmt.Println(data)
-	for _, conn := range ctx.SocketStore.Connections {
-		fmt.Println("About to send %m", data)
-		if err := conn.WriteJSON(data); err != nil {
-			fmt.Println("Error writing message to WebSocket connection.", err)
+		// s.writeMessages(ctx, messageStruct)
+		data := message
+		fmt.Println(data)
+		for _, conn := range ctx.SocketStore.Connections {
+			fmt.Println("About to send %m", data)
+			if err := conn.WriteJSON(data); err != nil {
+				fmt.Println("Error writing message to WebSocket connection.", err)
+			}
 		}
 	}
 }
+
+// // Function to write messages to users
+// func (s *SocketStore) writeMessages(ctx *HandlerContext, message *Message) {
+// 	data := message
+// 	fmt.Println("Inside writeMessages()...")
+// 	for _, conn := range ctx.SocketStore.Connections {
+// 		fmt.Println("About to send %m", data)
+// 		if err := conn.WriteJSON(data); err != nil {
+// 			fmt.Println("Error writing message to WebSocket connection.", err)
+// 		}
+// 	}
+// }
 
 // Function for rabbitMQ to check if it should fail
 func failOnError(err error, msg string) {
