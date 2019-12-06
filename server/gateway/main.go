@@ -24,17 +24,13 @@ func main() {
 	// Need to do Lets-Encrypt on docker servers.
 	tlsKeyPath := os.Getenv("TLSKEY")
 	tlsCertPath := os.Getenv("TLSCERT")
-
 	if len(tlsKeyPath) < 0 || len(tlsCertPath) < 0 {
 		log.Fatal("No environment variable found for either TLSKEY or TLSCERT")
 	}
 
 	// Creating a connection to the database
-	dsn := fmt.Sprintf(os.Getenv("DSN"), os.Getenv("MYSQL_ROOT_PASSWORD"))
-	// dsn := os.Getenv("DSN")
-	// dsn := fmt.Sprintf("root:%s@tcp(127.0.0.1)/demo", os.Getenv("MYSQL_ROOT_PASSWORD"))
-	// dsn := fmt.Sprintf("root:%s@tcp(127.0.0.1)/scribble", os.Getenv("MYSQL_ROOT_PASSWORD"))
-	// dsn := fmt.Sprintf("root:%s@tcp(127.0.0.1)/scribble", "password")
+	// dsn := fmt.Sprintf(os.Getenv("DSN"), os.Getenv("MYSQL_ROOT_PASSWORD"))
+	dsn := os.Getenv("DSN")
 
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
