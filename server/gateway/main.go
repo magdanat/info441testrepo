@@ -10,7 +10,6 @@ import (
 	"net/http/httputil"
 	"os"
 	"strings"
-
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -27,13 +26,14 @@ func main() {
 	tlsCertPath := os.Getenv("TLSCERT")
 
 	if len(tlsKeyPath) < 0 || len(tlsCertPath) < 0 {
-		log.Fatal("No environment variable found for eitherTLSKEY or TLSCERT")
+		log.Fatal("No environment variable found for either TLSKEY or TLSCERT")
 	}
 
 	// Creating a connection to the database
-	// dsn := fmt.Sprintf(os.Getenv("DSN"), os.Getenv("MYSQL_ROOT_PASSWORD"))
+	dsn := fmt.Sprintf(os.Getenv("DSN"), os.Getenv("MYSQL_ROOT_PASSWORD"))
 	// dsn := fmt.Sprintf("root:%s@tcp(127.0.0.1)/demo", os.Getenv("MYSQL_ROOT_PASSWORD"))
-	dsn := fmt.Sprintf("root:%s@tcp(127.0.0.1)/scribble", os.Getenv("MYSQL_ROOT_PASSWORD"))
+	// dsn := fmt.Sprintf("root:%s@tcp(127.0.0.1)/scribble", os.Getenv("MYSQL_ROOT_PASSWORD"))
+	// dsn := fmt.Sprintf("root:%s@tcp(127.0.0.1)/scribble", "password")
 
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
@@ -61,7 +61,8 @@ func main() {
 	}
 
 	// Microservices Messages in JS
-	messADDR := os.Getenv("MESSAGESADDR")
+	// messADDR := os.Getenv("MESSAGESADDR")
+	messADDR := "127.0.0.1:4001"
 	mux.Handle("/v1/messages", createReverseProxy(messADDR, ctx))
 	mux.Handle("/v1/messages/", createReverseProxy(messADDR, ctx))
 

@@ -112,6 +112,7 @@ func (ctx *HandlerContext) WebSocketConnectionHandler(w http.ResponseWriter, r *
 
 	// Insert our connection onto our datastructure for ongoing usage
 	ctx.InsertConnection(conn)
+	fmt.Println("I am inserting a connection")
 
 	// Invoke a goroutine for handling control messages from this connection
 	go (func(conn *websocket.Conn, connID int64) {
@@ -119,6 +120,7 @@ func (ctx *HandlerContext) WebSocketConnectionHandler(w http.ResponseWriter, r *
 		defer ctx.RemoveConnection(connID)
 
 		for {
+
 			messageType, p, err := conn.ReadMessage()
 
 			if messageType == TextMessage || messageType == BinaryMessage {
@@ -130,6 +132,7 @@ func (ctx *HandlerContext) WebSocketConnectionHandler(w http.ResponseWriter, r *
 				break
 			} else if err != nil {
 				fmt.Println("Error reading message.")
+				fmt.Println(err)
 				break
 			}
 			// ignore ping and pong messages
@@ -151,7 +154,7 @@ func CreateNotifier() *SocketStore {
 // WebSocket connections.
 func ConnectToRabbitMQ(ctx *HandlerContext) {
 	// Connect to RabbitMQ server
-	conn, err := amqp.Dial("amqp://localhost:5672/")
+	conn, err := amqp.Dial("amqp://rabbitmq:5672")
 	if err != nil {
 		log.Fatalf("Failed to connect to RabbitMQ: %v", err)
 	}
@@ -202,7 +205,7 @@ func ConnectToRabbitMQ(ctx *HandlerContext) {
 
 // Function that processes the messages from the queue
 func (s *SocketStore) processMessages(ctx *HandlerContext, msgs <-chan amqp.Delivery) {
-	fmt.Println("In process messages...")
+	fmt.Println("I am processing messages")
 	for message := range msgs {
 		message.Ack(false)
 		messageStruct := &Message{}
@@ -210,14 +213,24 @@ func (s *SocketStore) processMessages(ctx *HandlerContext, msgs <-chan amqp.Deli
 		if err != nil {
 			log.Fatalf("Error processing the message queue")
 		}
-		// s.writeMessages(ctx, messageStruct)
-		data := message
-		fmt.Println(data)
-		for _, conn := range ctx.SocketStore.Connections {
-			fmt.Println("About to send %m", data)
-			if err := conn.WriteJSON(data); err != nil {
-				fmt.Println("Error writing message to WebSocket connection.", err)
-			}
+		s.writeMessages(ctx, messageStruct)
+	}
+}
+
+// Function to write messages to users
+func (s *SocketStore) writeMessages(ctx *HandlerContext, message *Message) {
+	fmt.Println("I am writing messages")
+
+	// var writeError error
+	// messageType := message.Type
+	data := message
+	// username := message.Username
+
+	fmt.Println(ctx.SocketStore.Connections)
+	for _, conn := range ctx.SocketStore.Connections {
+		fmt.Println("About to send %m", data)
+		if err := conn.WriteJSON(data); err != nil {
+			fmt.Println("Error writing message to WebSocket connection.", err)
 		}
 	}
 }

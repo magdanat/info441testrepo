@@ -13,6 +13,8 @@ const app = express.Router();
 const sqlPOSTMessage = "INSERT INTO messages (MessageBody, UserID) VALUES(?, ?)"
 const sqlGETUsers = "SELECT * FROM users"
 
+const sqlGETMessage = "SELECT * FROM messages m JOIN users u on m.UserID = u.UserID ORDER BY m.MessageID DESC LIMIT 50"
+
 // Connecting to the mysql database
 let connection = mysql.createPool({
     // We are going to need to set this ENV variable, TODO
@@ -22,7 +24,7 @@ let connection = mysql.createPool({
     // database: process.env.MYSQL_DB
     host: '127.0.0.1',
     user: 'root',
-    password: '123456789',
+    password: 'password',
     database: 'scribble'
 });
 
@@ -31,6 +33,8 @@ const amqp = require('amqplib/callback_api');
 function sendMessageToRabbitMQ(msg) {
     // amqp.connect("amqp://" + process.env.RABBITADDR, (error0, conn) => {
       amqp.connect("amqp://" + "localhost:5672", (error0, conn) => {
+          console.log(msg)
+    // amqp.connect("amqp://guest:guest@rabbitmq:5672", (error0, conn) => {
         console.log("Sending message to RabbitMQ...");
         if (error0) {
             throw error0;
@@ -58,10 +62,11 @@ function sendMessageToRabbitMQ(msg) {
 
 // POST request to v1/messages
 app.post("/", (req, res, next) => {
-    let user = req.body.userid
-    let username = req.body.username
+    let userid = req.body.userid;
     let message = req.body.message;
-    connection.query(sqlPOSTMessage, [message, user.id], (err, result) => { 
+    let username = req.body.username;
+    console.log(req.body)
+    connection.query(sqlPOSTMessage, [message, userid], (err, result) => { 
         if (err) { 
             res.status(500).send("Unable to post message");
         } else { 
@@ -78,6 +83,25 @@ app.post("/", (req, res, next) => {
 
             // write to queue
             sendMessageToRabbitMQ(JSON.stringify(event));
+        }
+    })
+})
+
+app.get("/", (req, res, next) => {
+    connection.query(sqlGETMessage, [], (err, result) => { 
+        if (err) { 
+            res.status(500).send("Unable to get messages");
+        } else { 
+            res.status(201);
+            res.set("Content-Type", "application/json");
+            res.json(result);
+
+            // // Send event to RabbitMQ Server
+            // // create event object
+            // let event = { "type": "message-new", "message": result }
+
+            // // write to queue
+            // sendMessageToRabbitMQ(JSON.stringify(event));
         }
     })
 })
