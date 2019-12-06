@@ -4,7 +4,7 @@ const messages = require("./models/messaging/messages");
 
 //get ADDR environment variable,
 //defaulting to ":80", Only needs to handle simple HTTP requests
-const addr = process.env.ADDR || ":4001";
+const addr = process.env.ADDR || ":80";
 //split host and port using destructuring
 const [host, port] = addr.split(":");
 // Create app
