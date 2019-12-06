@@ -10,14 +10,13 @@ const [host, port] = addr.split(":");
 // Create app
 const app = express();
 
-console.log("We in main.js now!");
-
 // add JSON request body parsing middleware
 app.use(express.json());
 
 // API Routes
 app.use("/v1/messages", messages);
 
+console.log("Main.js is running...");
 app.listen(port, () => {
     console.log('Server is running locally at '  + addr);
 });

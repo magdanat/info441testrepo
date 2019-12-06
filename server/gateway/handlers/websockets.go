@@ -1,17 +1,26 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"sync"
-
 	"github.com/gorilla/websocket"
+	"github.com/streadway/amqp"
 )
 
 // SocketStore A simple store to store all the connections
 type SocketStore struct {
 	Connections map[int64]*websocket.Conn
 	lock        sync.Mutex
+}
+
+// Message This is a struct to read our message into
+type Message struct {
+	Type     string `json:"type"`
+	Message  string `json:"message"`
+	Username string `json:"username"`
 }
 
 // Control messages for websocket
@@ -134,5 +143,96 @@ func (ctx *HandlerContext) WebSocketConnectionHandler(w http.ResponseWriter, r *
 func CreateNotifier() *SocketStore {
 	return &SocketStore{
 		Connections: make(map[int64]*websocket.Conn),
+	}
+}
+
+// ConnectToRabbitMQ connects to a rabbitMQ server
+// Reads in new RabbitMQ messages and writes their contents to the correct
+// WebSocket connections.
+func ConnectToRabbitMQ(ctx *HandlerContext) {
+	// Connect to RabbitMQ server
+	conn, err := amqp.Dial("amqp://rabbitmq:5672")
+	if err != nil {
+		log.Fatalf("Failed to connect to RabbitMQ: %v", err)
+	}
+
+	// Open a RabbitMQ channel
+	ch, err := conn.Channel()
+	if err != nil {
+		log.Fatalf("Failed to open channel: %v", err)
+	}
+
+	// QueueDeclare declares a queue to hold messages and deliver to consumers
+	q, err := ch.QueueDeclare(
+		"events", // name
+		true,     // durable
+		false,    // delete when unused
+		false,    // exclusive
+		false,    // no-wait
+		nil,      // arguments
+	)
+	failOnError(err, "Failed to create queue")
+
+	// Consume() Starts delivering ourselves messages from the queue
+	// by pushing messages asyncrhonously
+	msgs, err := ch.Consume(
+		q.Name, // queue
+		"",     // consumer
+		true,   // auto-ack
+		false,  // exclusive
+		false,  // no-local
+		false,  // no-wait
+		nil,    // args
+	)
+	failOnError(err, "Failed to register a consumer")
+
+	// forever := make(chan bool)
+
+	// go func() {
+	// 	for d := range msgs {
+	// 		log.Printf("Received a message: %s", d.Body)
+	// 	}
+	// }()
+
+	// log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
+	// <-forever
+
+	go ctx.SocketStore.processMessages(ctx, msgs)
+}
+
+// Function that processes the messages from the queue
+func (s *SocketStore) processMessages(ctx *HandlerContext, msgs <-chan amqp.Delivery) {
+	for message := range msgs {
+		message.Ack(false)
+		messageStruct := &Message{}
+		err := json.Unmarshal([]byte(message.Body), messageStruct)
+		if err != nil {
+			log.Fatalf("Error processing the message queue")
+		}
+		s.writeMessages(ctx, messageStruct)
+	}
+}
+
+// Function to write messages to users
+func (s *SocketStore) writeMessages(ctx *HandlerContext, message *Message) {
+	// var writeError error
+	// messageType := message.Type
+	data := message
+	// username := message.Username
+	for _, conn := range ctx.SocketStore.Connections {
+		fmt.Println("About to send %m", data)
+		if err := conn.WriteJSON(data); err != nil {
+			fmt.Println("Error writing message to WebSocket connection.", err)
+		}
+		// if writeError != nil {
+		// 	return writeError
+		// }
+	}
+}
+
+// Function for rabbitMQ to check if it should fail
+func failOnError(err error, msg string) {
+	if err != nil {
+		log.Fatalf("%s: %s", msg, err)
 	}
 }

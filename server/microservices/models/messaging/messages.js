@@ -9,8 +9,9 @@ const mysql = require("mysql");
 //create a new express application
 const app = express.Router();
 
-// Used for PATCH for messages
+// MySQL commands
 const sqlPOSTMessage = "INSERT INTO messages (MessageBody, UserID) VALUES(?, ?)"
+const sqlGETUsers = "SELECT * FROM users"
 
 const sqlGETMessage = "SELECT * FROM messages m JOIN users u on m.UserID = u.UserID ORDER BY m.MessageID DESC LIMIT 50"
 
@@ -30,7 +31,9 @@ let connection = mysql.createPool({
 const amqp = require('amqplib/callback_api');
 
 function sendMessageToRabbitMQ(msg) {
-    amqp.connect("amqp://" + process.env.RABBITADDR, (error0, conn) => {
+    // amqp.connect("amqp://" + process.env.RABBITADDR, (error0, conn) => {
+    amqp.connect("amqp://guest:guest@rabbitmq:5672", (error0, conn) => {
+        console.log("Sending message to RabbitMQ...");
         if (error0) {
             throw error0;
         }
@@ -38,9 +41,12 @@ function sendMessageToRabbitMQ(msg) {
             if (error1) {
                 throw error1;
             }
-            let queueName = process.env.RABBITNAME;
-            ch.assertQueue(queueName, { durable: false });
+            // let queueName = process.env.RABBITNAME;
+            let queueName = "events"
+            ch.assertQueue(queueName, { durable: true });
             ch.sendToQueue(queueName, Buffer.from(msg));
+            console.log(" [x] Sent %s", msg);
+            console.log("Message succesfully sent to RabbitMQ!");
         });
         setTimeout(function () {
             conn.close();
@@ -63,12 +69,14 @@ app.post("/", (req, res, next) => {
             res.set("Content-Type", "application/json");
             res.json(result);
 
+            console.log("Succesfully posted message");
             // // Send event to RabbitMQ Server
             // // create event object
-            // let event = { "type": "message-new", "message": result }
+            console.log("Sending a message to queue...");
+            let event = { "type": "message-new", "message": message, "username": username}
 
-            // // write to queue
-            // sendMessageToRabbitMQ(JSON.stringify(event));
+            // write to queue
+            sendMessageToRabbitMQ(JSON.stringify(event));
         }
     })
 })
