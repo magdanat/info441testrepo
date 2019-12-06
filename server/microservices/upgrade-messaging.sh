@@ -6,7 +6,7 @@ docker rm -f messagetest
 
 export MYSQL_ROOT_PASSWORD=password
 export MYSQL_DB=db
-export MYSQL_ADDR=441sqldb
+export MYSQL_ADDR=441finaldb
 export RABBITADDR=rabbit:5672
 export RABBITNAME=MessageQ
 # export DSN="root:%s@tcp(441sqldb:3306)/db"
