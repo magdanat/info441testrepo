@@ -208,7 +208,7 @@ func (s *SocketStore) writeMessages(ctx *HandlerContext, message *Message) {
 	// var writeError error
 	// messageType := message.Type
 	data := message.Message
-	username := message.Username
+	// username := message.Username
 	for _, conn := range ctx.SocketStore.Connections {
 		if err := conn.WriteMessage(TextMessage, []byte(data)); err != nil {
 			fmt.Println("Error writing message to WebSocket connection.", err)

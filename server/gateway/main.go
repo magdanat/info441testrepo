@@ -68,6 +68,8 @@ func main() {
 	// Users Handlers
 	mux.HandleFunc("/v1/users", ctx.UsersHandler)
 
+	// Connect to RabbitMQ
+	handlers.ConnectToRabbitMQ(ctx)
 	// Websockets
 	mux.HandleFunc("/ws", ctx.WebSocketConnectionHandler)
 
