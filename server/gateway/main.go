@@ -25,16 +25,13 @@ func main() {
 	// Need to do Lets-Encrypt on docker servers.
 	tlsKeyPath := os.Getenv("TLSKEY")
 	tlsCertPath := os.Getenv("TLSCERT")
-
 	if len(tlsKeyPath) < 0 || len(tlsCertPath) < 0 {
 		log.Fatal("No environment variable found for either TLSKEY or TLSCERT")
 	}
 
 	// Creating a connection to the database
+	// dsn := fmt.Sprintf(os.Getenv("DSN"), os.Getenv("MYSQL_ROOT_PASSWORD"))
 	dsn := os.Getenv("DSN")
-	// dsn := fmt.Sprintf("root:%s@tcp(127.0.0.1)/demo", os.Getenv("MYSQL_ROOT_PASSWORD"))
-	// dsn := fmt.Sprintf("root:%s@tcp(127.0.0.1)/scribble", os.Getenv("MYSQL_ROOT_PASSWORD"))
-	// dsn := fmt.Sprintf("root:%s@tcp(127.0.0.1)/scribble", "password")
 
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
@@ -79,7 +76,11 @@ func main() {
 
 	// USE THIS ADDR FOR POSTMAN
 	// log.Fatal(http.ListenAndServe(addr, wrappedMux))
+<<<<<<< HEAD
 	// // log.Fatal(http.ListenAndServe(addr, mux))
+=======
+	// log.Fatal(http.ListenAndServe(addr, mux))
+>>>>>>> 9cdce5a731a41512a42295a9107f888a80222199
 	log.Fatal(http.ListenAndServeTLS(addr, tlsCertPath, tlsKeyPath, wrappedMux))
 }
 

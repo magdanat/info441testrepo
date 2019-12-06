@@ -91,13 +91,6 @@ app.get("/", (req, res, next) => {
             res.status(201);
             res.set("Content-Type", "application/json");
             res.json(result);
-
-            // // Send event to RabbitMQ Server
-            // // create event object
-            // let event = { "type": "message-new", "message": result }
-
-            // // write to queue
-            // sendMessageToRabbitMQ(JSON.stringify(event));
         }
     })
 })
