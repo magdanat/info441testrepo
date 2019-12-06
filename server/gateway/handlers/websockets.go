@@ -154,7 +154,7 @@ func CreateNotifier() *SocketStore {
 // WebSocket connections.
 func ConnectToRabbitMQ(ctx *HandlerContext) {
 	// Connect to RabbitMQ server
-	conn, err := amqp.Dial("amqp://rabbitmq:5672")
+	conn, err := amqp.Dial("amqp://localhost:5672")
 	if err != nil {
 		log.Fatalf("Failed to connect to RabbitMQ: %v", err)
 	}
@@ -207,7 +207,7 @@ func ConnectToRabbitMQ(ctx *HandlerContext) {
 func (s *SocketStore) processMessages(ctx *HandlerContext, msgs <-chan amqp.Delivery) {
 	fmt.Println("I am processing messages")
 	for message := range msgs {
-		message.Ack(false)
+		fmt.Println(message)
 		messageStruct := &Message{}
 		err := json.Unmarshal([]byte(message.Body), messageStruct)
 		if err != nil {

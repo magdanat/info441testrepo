@@ -30,10 +30,10 @@ func main() {
 	}
 
 	// Creating a connection to the database
-	dsn := fmt.Sprintf(os.Getenv("DSN"), os.Getenv("MYSQL_ROOT_PASSWORD"))
+	// dsn := fmt.Sprintf(os.Getenv("DSN"), os.Getenv("MYSQL_ROOT_PASSWORD"))
 	// dsn := fmt.Sprintf("root:%s@tcp(127.0.0.1)/demo", os.Getenv("MYSQL_ROOT_PASSWORD"))
 	// dsn := fmt.Sprintf("root:%s@tcp(127.0.0.1)/scribble", os.Getenv("MYSQL_ROOT_PASSWORD"))
-	// dsn := fmt.Sprintf("root:%s@tcp(127.0.0.1)/scribble", "password")
+	dsn := fmt.Sprintf("root:%s@tcp(127.0.0.1)/scribble", "password")
 
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {

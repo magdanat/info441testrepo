@@ -26,10 +26,14 @@ export default class Chat extends React.Component {
     this.ws.onmessage = evt => {
       // listen to data sent from the websocket server
       // const message = JSON.parse(evt.message)
-      console.log("hello")
-      console.log(evt.data)
-      // let messageList = this.state.messageList.unshift(evt.data)
-      // this.setState({messageList: messageList})
+      let message = JSON.parse(evt.data)
+      let messageList = this.state.messageList
+
+      messageList.unshift({
+        UserName: message.username,
+        MessageBody: message.message
+      })
+      this.setState({messageList: messageList})
     }
 
     this.ws.onclose = () => {
