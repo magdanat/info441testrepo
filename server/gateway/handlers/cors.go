@@ -14,7 +14,7 @@ type CorsMW1 struct {
 func (c *CorsMW1) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "GET, PUT, POST, PATCH, DELETE")
-	w.Header().Set("Access-Control-Allow-Headers", "Authorization")
+	w.Header().Set("Access-Control-Allow-Headers", "*")
 	w.Header().Set("Access-Max-Age", "600")
 	// Call the real handler
 	if r.Method == http.MethodOptions {
