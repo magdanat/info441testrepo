@@ -33,6 +33,7 @@ func main() {
 	dsn := fmt.Sprintf(os.Getenv("DSN"), os.Getenv("MYSQL_ROOT_PASSWORD"))
 	// dsn := fmt.Sprintf("root:%s@tcp(127.0.0.1)/demo", os.Getenv("MYSQL_ROOT_PASSWORD"))
 	// dsn := fmt.Sprintf("root:%s@tcp(127.0.0.1)/scribble", os.Getenv("MYSQL_ROOT_PASSWORD"))
+	// dsn := fmt.Sprintf("root:%s@tcp(127.0.0.1)/scribble", "password")
 
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
@@ -60,7 +61,8 @@ func main() {
 	}
 
 	// Microservices Messages in JS
-	messADDR := os.Getenv("MESSAGESADDR")
+	// messADDR := os.Getenv("MESSAGESADDR")
+	messADDR := "127.0.0.1:4001"
 	mux.Handle("/v1/messages", createReverseProxy(messADDR, ctx))
 	mux.Handle("/v1/messages/", createReverseProxy(messADDR, ctx))
 
