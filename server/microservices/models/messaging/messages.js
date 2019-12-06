@@ -18,14 +18,14 @@ const sqlGETMessage = "SELECT * FROM messages m JOIN users u on m.UserID = u.Use
 // Connecting to the mysql database
 let connection = mysql.createPool({
     // We are going to need to set this ENV variable, TODO
-    // host: process.env.MYSQL_ADDR,
-    // user: 'root',
-    // password: process.env.MYSQL_ROOT_PASSWORD,
-    // database: process.env.MYSQL_DB
-    host: '127.0.0.1',
+    host: process.env.MYSQL_ADDR,
     user: 'root',
-    password: 'password',
-    database: 'scribble'
+    password: process.env.MYSQL_ROOT_PASSWORD,
+    database: process.env.MYSQL_DB
+    // host: '127.0.0.1',
+    // user: 'root',
+    // password: 'password',
+    // database: 'scribble'
 });
 
 const amqp = require('amqplib/callback_api');

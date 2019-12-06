@@ -15,7 +15,7 @@ export default class Chat extends React.Component {
       messageList: []
     }
   }
-  ws = new WebSocket('ws://localhost:443/ws')
+  ws = new WebSocket('ws://fpapi.nathanmagdalera.me:443/ws')
   componentDidMount() {
     this.getMessages(); 
     this.ws.onopen = () => {
@@ -44,7 +44,7 @@ export default class Chat extends React.Component {
   }
 
   getMessages() {
-    fetch('http://localhost:443/v1/messages/', {
+    fetch('http://fpapi.nathanmagdalera.me:443/v1/messages/', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -80,7 +80,7 @@ export default class Chat extends React.Component {
     // TODO need to send the guess to backend
     console.log(this.props.userID)
     console.log(this.state.curMessage)
-    fetch('http://localhost:443/v1/messages', {
+    fetch('http://fpapi.nathanmagdalera.me:443/v1/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
