@@ -32,9 +32,9 @@ const amqp = require('amqplib/callback_api');
 
 function sendMessageToRabbitMQ(msg) {
     // amqp.connect("amqp://" + process.env.RABBITADDR, (error0, conn) => {
-      amqp.connect("amqp://" + "localhost:5672", (error0, conn) => {
-          console.log(msg)
-    // amqp.connect("amqp://guest:guest@rabbitmq:5672", (error0, conn) => {
+    //   amqp.connect("amqp://" + "localhost:5672", (error0, conn) => {
+    amqp.connect("amqp://guest:guest@rabbitmq:5672", (error0, conn) => {
+        console.log(msg)
         console.log("Sending message to RabbitMQ...");
         if (error0) {
             throw error0;
