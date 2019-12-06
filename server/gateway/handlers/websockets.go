@@ -17,8 +17,8 @@ type SocketStore struct {
 	lock        sync.Mutex
 }
 
-// This is a struct to read our message into
-type msg struct {
+// Message This is a struct to read our message into
+type Message struct {
 	Type    string `json:"type"`
 	Message string `json:"message"`
 }
@@ -159,7 +159,7 @@ func ConnectToRabbitMQ(ctx *HandlerContext) {
 	// Open a RabbitMQ channel
 	ch, err := conn.Channel()
 	if err != nil {
-		log.Fatalf("Failed to open channel: &v", err)
+		log.Fatalf("Failed to open channel: %v", err)
 	}
 
 	// QueueDeclare declares a queue to hold messages and deliver to consumers
@@ -192,7 +192,8 @@ func ConnectToRabbitMQ(ctx *HandlerContext) {
 // Function that processes the messages from the queue
 func (s *SocketStore) processMessages(ctx *HandlerContext, msgs <-chan amqp.Delivery) {
 	for message := range msgs {
-		messageStruct := &msg{}
+		message.Ack(false)
+		messageStruct := &Message{}
 		err := json.Unmarshal([]byte(message.Body), messageStruct)
 		if err != nil {
 			log.Fatalf("Error processing the message queue")
@@ -202,15 +203,17 @@ func (s *SocketStore) processMessages(ctx *HandlerContext, msgs <-chan amqp.Deli
 }
 
 // Function to write messages to users
-func (s *SocketStore) writeMessages(ctx *HandlerContext, message *msg) {
-	var writeError error
-	messageType := message.Type
+func (s *SocketStore) writeMessages(ctx *HandlerContext, message *Message) {
+	// var writeError error
+	// messageType := message.Type
 	data := message.Message
 	for _, conn := range ctx.SocketStore.Connections {
-		writeError = conn.WriteMessage(messageType, data)
-		if writeError != nil {
-			return writeError
+		if err := conn.WriteMessage(TextMessage, []byte(data)); err != nil {
+			fmt.Println("Error writing message to WebSocket connection.", err)
 		}
+		// if writeError != nil {
+		// 	return writeError
+		// }
 	}
 }
 
