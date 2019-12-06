@@ -12,6 +12,8 @@ const app = express.Router();
 // Used for PATCH for messages
 const sqlPOSTMessage = "INSERT INTO messages (MessageBody, UserID) VALUES(?, ?)"
 
+const sqlGETMessage = "SELECT * FROM messages m JOIN users u on m.UserID = u.UserID ORDER BY m.MessageID DESC LIMIT 50"
+
 // Connecting to the mysql database
 let connection = mysql.createPool({
     // We are going to need to set this ENV variable, TODO
@@ -21,7 +23,7 @@ let connection = mysql.createPool({
     // database: process.env.MYSQL_DB
     host: '127.0.0.1',
     user: 'root',
-    password: '123456789',
+    password: 'password',
     database: 'scribble'
 });
 
@@ -50,11 +52,31 @@ function sendMessageToRabbitMQ(msg) {
 
 // POST request to v1/messages
 app.post("/", (req, res, next) => {
-    let user = req.body.userid
+    let userid = req.body.userid;
     let message = req.body.message;
-    connection.query(sqlPOSTMessage, [message, user.id], (err, result) => { 
+    console.log(req.body)
+    connection.query(sqlPOSTMessage, [message, userid], (err, result) => { 
         if (err) { 
             res.status(500).send("Unable to post message");
+        } else { 
+            res.status(201);
+            res.set("Content-Type", "application/json");
+            res.json(result);
+
+            // // Send event to RabbitMQ Server
+            // // create event object
+            // let event = { "type": "message-new", "message": result }
+
+            // // write to queue
+            // sendMessageToRabbitMQ(JSON.stringify(event));
+        }
+    })
+})
+
+app.get("/", (req, res, next) => {
+    connection.query(sqlGETMessage, [], (err, result) => { 
+        if (err) { 
+            res.status(500).send("Unable to get messages");
         } else { 
             res.status(201);
             res.set("Content-Type", "application/json");
