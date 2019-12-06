@@ -21,7 +21,7 @@ export default class GameChat extends React.Component {
   componentDidMount() {
     if (this.props.location.state != undefined) {
       if (this.props.location.state.createNewUser != undefined) {
-        fetch('http://localhost:443/v1/users', {
+        fetch('http://fpapi.nathanmagdalera.me:443/v1/users', {
           method: 'POST',
           body: JSON.stringify({ UserName: this.props.location.state.createNewUser }),
           headers: {

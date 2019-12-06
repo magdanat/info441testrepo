@@ -80,7 +80,7 @@ export default class Chat extends React.Component {
     // TODO need to send the guess to backend
     console.log(this.props.userID)
     console.log(this.state.curMessage)
-    fetch('http://fpapi.nathanmagdalera.me:443/v1/messages', {
+    fetch('http://fpapi.nathanmagdalera.me:443/v1/messages/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
