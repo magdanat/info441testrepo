@@ -17,11 +17,14 @@
 # # start app
 # CMD ["npm", "start"]
 
+
 FROM node:8 as react-build
 WORKDIR /app
 COPY . ./
-RUN yarn
-RUN yarn build
+# RUN yarn
+# RUN yarn build
+RUN npm install
+CMD ["npm", "start"]
 
 # Stage 2 - the production environment
 FROM nginx:alpine
