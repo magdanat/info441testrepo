@@ -46,7 +46,7 @@ func main() {
 	if err := db.Ping(); err != nil {
 		fmt.Printf("error pinging database: %v\n", err)
 	} else {
-		fmt.Printf("successfully connected!\n")
+		fmt.Printf("successfully connected to MySQL database!\n")
 	}
 
 	userStore := &users.MySQLStore{

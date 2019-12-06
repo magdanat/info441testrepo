@@ -31,6 +31,7 @@ const amqp = require('amqplib/callback_api');
 function sendMessageToRabbitMQ(msg) {
     // amqp.connect("amqp://" + process.env.RABBITADDR, (error0, conn) => {
       amqp.connect("amqp://" + "localhost:5672", (error0, conn) => {
+        console.log("Sending message to RabbitMQ...");
         if (error0) {
             throw error0;
         }
@@ -38,10 +39,12 @@ function sendMessageToRabbitMQ(msg) {
             if (error1) {
                 throw error1;
             }
-            let queueName = process.env.RABBITNAME;
-            ch.assertQueue(queueName, { durable: false });
+            // let queueName = process.env.RABBITNAME;
+            let queueName = "events"
+            ch.assertQueue(queueName, { durable: true });
             ch.sendToQueue(queueName, Buffer.from(msg));
             console.log(" [x] Sent %s", msg);
+            console.log("Message succesfully sent to RabbitMQ!");
         });
         setTimeout(function () {
             conn.close();
@@ -60,7 +63,6 @@ app.post("/", (req, res, next) => {
         if (err) { 
             res.status(500).send("Unable to post message");
         } else { 
-          console.log("Succesfully posted message");
             res.status(201);
             res.set("Content-Type", "application/json");
             res.json(result);
@@ -68,7 +70,7 @@ app.post("/", (req, res, next) => {
             console.log("Succesfully posted message");
             // // Send event to RabbitMQ Server
             // // create event object
-            console.log(result);
+            console.log("Sending a message to queue...");
             let event = { "type": "message-new", "message": message, "username": username}
 
             // write to queue

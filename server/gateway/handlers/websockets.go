@@ -187,6 +187,17 @@ func ConnectToRabbitMQ(ctx *HandlerContext) {
 	)
 	failOnError(err, "Failed to register a consumer")
 
+	// forever := make(chan bool)
+
+	// go func() {
+	// 	for d := range msgs {
+	// 		log.Printf("Received a message: %s", d.Body)
+	// 	}
+	// }()
+
+	// log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
+	// <-forever
+
 	go ctx.SocketStore.processMessages(ctx, msgs)
 }
 
@@ -210,6 +221,7 @@ func (s *SocketStore) writeMessages(ctx *HandlerContext, message *Message) {
 	data := message
 	// username := message.Username
 	for _, conn := range ctx.SocketStore.Connections {
+		fmt.Println("About to send %m", data)
 		if err := conn.WriteJSON(data); err != nil {
 			fmt.Println("Error writing message to WebSocket connection.", err)
 		}
