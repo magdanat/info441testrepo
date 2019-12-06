@@ -10,6 +10,7 @@ import (
 	"net/http/httputil"
 	"os"
 	"strings"
+
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -77,9 +78,9 @@ func main() {
 	wrappedMux := handlers.Response(mux)
 
 	// USE THIS ADDR FOR POSTMAN
-	log.Fatal(http.ListenAndServe(addr, wrappedMux))
-	// log.Fatal(http.ListenAndServe(addr, mux))
-	// log.Fatal(http.ListenAndServeTLS(addr, tlsCertPath, tlsKeyPath, wrappedMux))
+	// log.Fatal(http.ListenAndServe(addr, wrappedMux))
+	// // log.Fatal(http.ListenAndServe(addr, mux))
+	log.Fatal(http.ListenAndServeTLS(addr, tlsCertPath, tlsKeyPath, wrappedMux))
 }
 
 // createReverseProxy allows us to make requests to microservices
