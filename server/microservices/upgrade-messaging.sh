@@ -12,6 +12,6 @@ export RABBITADDR=rabbitmq:5672
 export DSN="root:%s@tcp(441finaldb:3306)/db"
 
 # run instance of newly-updated container image
-docker run -d --network customNet --default-authentication-plugin=mysql_native_password --name messagetest -e DSN=$DSN -e RABBITADDR=$RABBITADDR -e MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD -e MYSQL_DB=$MYSQL_DB -e MYSQL_ADDR=$MYSQL_ADDR magdanat/messagingms
+docker run -d --network customNet --name messagetest -e DSN=$DSN -e RABBITADDR=$RABBITADDR -e MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD -e MYSQL_DB=$MYSQL_DB -e MYSQL_ADDR=$MYSQL_ADDR magdanat/messagingms
 
 # -e RABBITADDR=$RABBITADDR -e RABBITNAME=$RABBITNAME

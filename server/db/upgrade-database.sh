@@ -8,4 +8,4 @@ docker rm -f 441finaldb
 export MYSQL_ROOT_PASSWORD=password
 
 # run new instance
-docker run -d --name 441finaldb --network=customNet -e MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD -e MYSQL_DATABASE=db magdanat/finaldatabase
+docker run -d --name 441finaldb --network=customNet -e MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD -e MYSQL_DATABASE=db magdanat/finaldatabase --default-authentication-plugin=mysql_native_password
