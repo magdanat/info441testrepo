@@ -10,10 +10,10 @@ const mysql = require("mysql");
 const app = express.Router();
 
 // MySQL commands
-const sqlPOSTMessage = "INSERT INTO messages (MessageBody, UserID) VALUES(?, ?)"
-const sqlGETUsers = "SELECT * FROM users"
+const sqlPOSTMessage = "INSERT INTO Messages (MessageBody, UserID) VALUES(?, ?)"
+const sqlGETUsers = "SELECT * FROM Users"
 
-const sqlGETMessage = "SELECT * FROM messages m JOIN users u on m.UserID = u.UserID ORDER BY m.MessageID DESC LIMIT 50"
+const sqlGETMessage = "SELECT * FROM Messages m JOIN Users u on m.UserID = u.UserID ORDER BY m.MessageID DESC LIMIT 50"
 
 // Connecting to the mysql database
 let connection = mysql.createPool({
