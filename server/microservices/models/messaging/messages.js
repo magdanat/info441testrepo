@@ -21,7 +21,8 @@ let connection = mysql.createPool({
     host: process.env.MYSQL_ADDR,
     user: 'root',
     password: process.env.MYSQL_ROOT_PASSWORD,
-    database: process.env.MYSQL_DB
+    database: process.env.MYSQL_DB,
+    insecureAuth: true
     // host: '127.0.0.1',
     // user: 'root',
     // password: 'password',
@@ -65,7 +66,7 @@ app.post("/", (req, res, next) => {
     console.log(req.body)
     connection.query(sqlPOSTMessage, [message, userid], (err, result) => { 
         if (err) { 
-            console.log(err)
+            console.log(err.toString())
             res.status(500).send("Unable to post message");
         } else { 
             res.status(201);
