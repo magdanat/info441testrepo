@@ -15,7 +15,7 @@ export default class Chat extends React.Component {
       messageList: []
     }
   }
-  ws = new WebSocket('ws://fpapi.nathanmagdalera.me:443/ws')
+  ws = new WebSocket('wss://fpapi.nathanmagdalera.me:443/ws')
   componentDidMount() {
     this.getMessages(); 
     this.ws.onopen = () => {
