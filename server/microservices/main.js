@@ -12,8 +12,8 @@ const app = express();
 
 // add JSON request body parsing middleware
 app.use(express.json());
-var cors = require('cors');
-app.use(cors());
+// var cors = require('cors');
+// app.use(cors());
 
 // API Routes
 app.use("/v1/messages", messages);
