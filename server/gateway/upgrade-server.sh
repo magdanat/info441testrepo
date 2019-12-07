@@ -6,7 +6,7 @@ export TLSCERT=/etc/letsencrypt/live/fpapi.nathanmagdalera.me/fullchain.pem
 export TLSKEY=/etc/letsencrypt/live/fpapi.nathanmagdalera.me/privkey.pem
 export DSN="root:password@tcp(441finaldb:3306)/db"
 export MYSQL_ROOT_PASSWORD=password
-export MESSAGESADDR=messagetest:4001
+export MESSAGESADDR=messagetest:80
 export RABBITADDR=rabbitmq:5672
 #export RABBITNAME=MessageQ
 
