@@ -66,8 +66,13 @@ app.post("/", (req, res, next) => {
     console.log(req.body)
     connection.query(sqlPOSTMessage, [message, userid], (err, result) => { 
         if (err) { 
+<<<<<<< HEAD
             console.log(err.toString())
             res.status(500).send("Unable to post message");
+=======
+            console.log(err)
+            res.status(500).send(err.toString());
+>>>>>>> ee5b61c07ebbed4657955056f4d169d90b41a5d8
         } else { 
             res.status(201);
             res.set("Content-Type", "application/json");
@@ -89,7 +94,7 @@ app.get("/", (req, res, next) => {
     connection.query(sqlGETMessage, [], (err, result) => { 
         if (err) { 
             console.log(err)
-            res.status(500).send("Unable to get messages");
+            res.status(500).send(err.toString());
         } else { 
             res.status(201);
             res.set("Content-Type", "application/json");
