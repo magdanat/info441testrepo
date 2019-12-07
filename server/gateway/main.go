@@ -10,6 +10,7 @@ import (
 	"net/http/httputil"
 	"os"
 	"strings"
+
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -75,7 +76,11 @@ func main() {
 
 	// USE THIS ADDR FOR POSTMAN
 	// log.Fatal(http.ListenAndServe(addr, wrappedMux))
+<<<<<<< HEAD
+	// // log.Fatal(http.ListenAndServe(addr, mux))
+=======
 	// log.Fatal(http.ListenAndServe(addr, mux))
+>>>>>>> 9cdce5a731a41512a42295a9107f888a80222199
 	log.Fatal(http.ListenAndServeTLS(addr, tlsCertPath, tlsKeyPath, wrappedMux))
 }
 
